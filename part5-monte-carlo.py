@@ -61,6 +61,12 @@ x4 = np.where(x4 == 0, 1, x4)
 log_x4 = np.log(x4) * x[:,2]
 
 # Eliminate points that don't comply with constraints
+# Constraints: 2500x_B0 + 5000x_E0 + log(x_e0) <= 9500
+#              30x_B0 + x_e0 >= 50
+#              30x_B0 + 30x_B1 + x_e0 + x_e1 >= 355
+#              x_E0 + x_E1 <= 1
+#              x_e0 - 355x_E0 <= 0
+#              x_e1 - 355x_E0 - 355x_E1 <= 0
 constraints = np.logical_and((2500*x[:,0] + 5000*x[:,2] + log_x4 <= 9500), np.logical_and((30*x[:,0] + x[:,4] >= 50), np.logical_and((30*x[:,0] + 30*x[:,1] + x[:,4] + x[:,5] >= 355), np.logical_and((x[:,2] + x[:,3] <= 1), np.logical_and((x[:,4] - 355*x[:,2] <= 0), (x[:,5] - 355*x[:,2] - 355*x[:,3] <= 0))))))
 x = x[constraints,:]
 
@@ -181,7 +187,7 @@ log_x5 = np.log(x_sub5) * np.where(np.logical_or(x_sub[:,2] != 0, x_sub[:,3] != 
 # Find the objective function value at each point
 f = 2500*x_sub[:,0] + 5000*x_sub[:,2] + log_x4 + 2500*x_sub[:,1] + 5000*x_sub[:,3] + log_x5
 
-# Create a 3-D plot of the randomly drawn data points, showing the numbers of users for each license type and the objective function value of each
+# Create a 3-D plot of the randomly drawn data points, showing the numbers of users for each license type and the objective function value of each point
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 scatter = ax.scatter(basic_counts, enterprise_counts, f, c=f, cmap='viridis', label="Random Samples", alpha=0.5)
